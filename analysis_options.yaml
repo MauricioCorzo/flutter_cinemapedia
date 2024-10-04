@@ -1,1 +1,7 @@
 include: package:flutter_lints/flutter.yaml
+
+linter:
+  rules:
+    unnecessary_new: false
+    unnecessary_this: false
+    prefer_null_aware_operators: false
