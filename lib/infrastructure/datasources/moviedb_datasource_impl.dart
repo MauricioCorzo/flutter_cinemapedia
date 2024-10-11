@@ -22,12 +22,28 @@ class MoviedbDatasourceImpl implements MoviesDatasource {
       },
     );
 
-    final movieDbResponse = MovieDbResponse.fromJson(response.data);
-
-    final List<Movie> movies = List.from(movieDbResponse.results
-        .where((movieDb) => movieDb.posterPath != "no-poster")
-        .map((movieDb) => MovieMapper.movieDBToEntity(movieDb)));
-
-    return movies;
+    return _jsonToMovies(response.data);
   }
+
+  @override
+  Future<List<Movie>> getPopular({int page = 1}) async {
+    final Response response = await _dio.get(
+      "/movie/popular",
+      queryParameters: {
+        "page": page,
+      },
+    );
+
+    return _jsonToMovies(response.data);
+  }
+}
+
+List<Movie> _jsonToMovies(Map<String, dynamic> json) {
+  final movieDbResponse = MovieDbResponse.fromJson(json);
+
+  final List<Movie> movies = List.from(movieDbResponse.results
+      .where((movieDb) => movieDb.posterPath != "no-poster")
+      .map((movieDb) => MovieMapper.movieDBToEntity(movieDb)));
+
+  return movies;
 }

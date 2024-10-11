@@ -6,8 +6,14 @@ class MovieRepositoryImpl implements MoviesRepository {
   final MoviesDatasource dataSource;
 
   MovieRepositoryImpl({required this.dataSource});
+
   @override
   Future<List<Movie>> getNowPlaying({int page = 1}) {
     return this.dataSource.getNowPlaying(page: page);
+  }
+
+  @override
+  Future<List<Movie>> getPopular({int page = 1}) {
+    return this.dataSource.getPopular(page: page);
   }
 }

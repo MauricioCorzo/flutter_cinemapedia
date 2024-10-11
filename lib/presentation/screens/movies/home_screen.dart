@@ -1,3 +1,4 @@
+import 'package:cinemapedia/config/helper/date_formats.dart';
 import 'package:cinemapedia/presentation/providers/providers.dart';
 import 'package:cinemapedia/presentation/widgets/wigets.dart';
 import 'package:flutter/material.dart';
@@ -37,12 +38,15 @@ class _HomeViewState extends ConsumerState<_HomeView> {
     super.initState();
     // Tengo acceso al ref porque estoy dentro de un ConsumerState, no hace falta el build(context,ref)
     ref.read(nowPlayingMoviesProvider.notifier).loadNextPage();
+
+    ref.read(popularMoviesProvider.notifier).loadNextPage();
   }
 
   @override
   Widget build(BuildContext context) {
     final slideShowNowPlayingMovies = ref.watch(moviesSlideShowProvider);
     final nowPlayingMovies = ref.watch(nowPlayingMoviesProvider);
+    final popularMovies = ref.watch(popularMoviesProvider);
 
     if (slideShowNowPlayingMovies.isEmpty) {
       return const Center(
@@ -85,34 +89,18 @@ class _HomeViewState extends ConsumerState<_HomeView> {
                 MovieHorizontalListview(
                   movies: nowPlayingMovies,
                   title: "In theatres",
-                  subTitle: "Lunes 20",
+                  subTitle:
+                      "${CustomDateFormatter.date("dd/MM", DateTime.parse("2024-09-04"))} - ${CustomDateFormatter.date("dd/MM", DateTime.parse("2024-10-16"))}",
                   loadNextPage: () => ref
                       .read(nowPlayingMoviesProvider.notifier)
                       .loadNextPage(),
                 ),
                 MovieHorizontalListview(
-                  movies: nowPlayingMovies,
-                  title: "In theatres",
-                  subTitle: "Lunes 20",
-                  loadNextPage: () => ref
-                      .read(nowPlayingMoviesProvider.notifier)
-                      .loadNextPage(),
-                ),
-                MovieHorizontalListview(
-                  movies: nowPlayingMovies,
-                  title: "In theatres",
-                  subTitle: "Lunes 20",
-                  loadNextPage: () => ref
-                      .read(nowPlayingMoviesProvider.notifier)
-                      .loadNextPage(),
-                ),
-                MovieHorizontalListview(
-                  movies: nowPlayingMovies,
-                  title: "In theatres",
-                  subTitle: "Lunes 20",
-                  loadNextPage: () => ref
-                      .read(nowPlayingMoviesProvider.notifier)
-                      .loadNextPage(),
+                  movies: popularMovies,
+                  title: "Popular´s",
+                  // subTitle: "Lunes 20",
+                  loadNextPage: () =>
+                      ref.read(popularMoviesProvider.notifier).loadNextPage(),
                 ),
 
                 const SizedBox(
