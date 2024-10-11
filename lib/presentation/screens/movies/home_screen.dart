@@ -9,8 +9,17 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      body: _HomeView(),
+    return Scaffold(
+      body: const _HomeView(),
+      bottomNavigationBar: BottomNavigationBar(
+        items: const [
+          BottomNavigationBarItem(icon: Icon(Icons.home_max), label: "Home"),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.label_outline), label: "Categories"),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.favorite_outline), label: "Favorites"),
+        ],
+      ),
     );
   }
 }
@@ -33,6 +42,7 @@ class _HomeViewState extends ConsumerState<_HomeView> {
   @override
   Widget build(BuildContext context) {
     final slideShowNowPlayingMovies = ref.watch(moviesSlideShowProvider);
+    final nowPlayingMovies = ref.watch(nowPlayingMoviesProvider);
 
     if (slideShowNowPlayingMovies.isEmpty) {
       return const Center(
@@ -41,22 +51,76 @@ class _HomeViewState extends ConsumerState<_HomeView> {
     }
 
     return SizedBox.expand(
-      child: Column(
-        children: [
-          const CustomAppbar(),
-          // Expanded(
-          //   child: ListView.builder(
-          //     itemCount: nowPlayingMovies.length,
-          //     itemBuilder: (context, index) {
-          //       final movie = nowPlayingMovies[index];
-          //       return ListTile(
-          //         title: Text(movie.title),
-          //       );
-          //     },
-          //   ),
-          // )
-          // MoviesSlideshow(movies: nowPlayingMovies.sublist(0, 6))
-          MoviesSlideshow(movies: slideShowNowPlayingMovies)
+      child: CustomScrollView(
+        slivers: [
+          const SliverAppBar(
+            floating: true,
+            // forceMaterialTransparency: true,
+
+            flexibleSpace: FlexibleSpaceBar(
+              titlePadding: EdgeInsets.zero,
+              centerTitle: false,
+              title: CustomAppbar(),
+            ),
+          ),
+          SliverList(
+              delegate: SliverChildBuilderDelegate((context, index) {
+            return Column(
+              children: [
+                // const CustomAppbar(),
+                // Expanded(
+                //   child: ListView.builder(
+                //     itemCount: nowPlayingMovies.length,
+                //     itemBuilder: (context, index) {
+                //       final movie = nowPlayingMovies[index];
+                //       return ListTile(
+                //         title: Text(movie.title),
+                //       );
+                //     },
+                //   ),
+                // )
+                // MoviesSlideshow(movies: nowPlayingMovies.sublist(0, 6))
+                MoviesSlideshow(movies: slideShowNowPlayingMovies),
+
+                MovieHorizontalListview(
+                  movies: nowPlayingMovies,
+                  title: "In theatres",
+                  subTitle: "Lunes 20",
+                  loadNextPage: () => ref
+                      .read(nowPlayingMoviesProvider.notifier)
+                      .loadNextPage(),
+                ),
+                MovieHorizontalListview(
+                  movies: nowPlayingMovies,
+                  title: "In theatres",
+                  subTitle: "Lunes 20",
+                  loadNextPage: () => ref
+                      .read(nowPlayingMoviesProvider.notifier)
+                      .loadNextPage(),
+                ),
+                MovieHorizontalListview(
+                  movies: nowPlayingMovies,
+                  title: "In theatres",
+                  subTitle: "Lunes 20",
+                  loadNextPage: () => ref
+                      .read(nowPlayingMoviesProvider.notifier)
+                      .loadNextPage(),
+                ),
+                MovieHorizontalListview(
+                  movies: nowPlayingMovies,
+                  title: "In theatres",
+                  subTitle: "Lunes 20",
+                  loadNextPage: () => ref
+                      .read(nowPlayingMoviesProvider.notifier)
+                      .loadNextPage(),
+                ),
+
+                const SizedBox(
+                  height: 20,
+                )
+              ],
+            );
+          }, childCount: 1))
         ],
       ),
     );
