@@ -16,7 +16,7 @@ class MoviesSlideshow extends StatelessWidget {
       height: 210,
       child: Swiper(
         autoplay: true,
-        autoplayDelay: 2000,
+        autoplayDelay: 10000,
         viewportFraction: 0.8,
         scale: 0.9,
         controller: swipperController,
@@ -60,6 +60,7 @@ class _Slide extends StatelessWidget {
                 children: [
                   Image.network(
                     movie.backdropPath,
+                    filterQuality: FilterQuality.low,
                     fit: BoxFit.cover,
                     loadingBuilder: (context, child, loadingProgress) {
                       // if (loadingProgress != null) {

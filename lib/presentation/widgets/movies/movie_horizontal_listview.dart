@@ -7,7 +7,7 @@ class MovieHorizontalListview extends StatefulWidget {
   final List<Movie> movies;
   final String? title;
   final String? subTitle;
-  final void Function()? loadNextPage;
+  final Future<void> Function()? loadNextPage;
 
   const MovieHorizontalListview(
       {super.key,
@@ -23,17 +23,24 @@ class MovieHorizontalListview extends StatefulWidget {
 
 class _MovieHorizontalListviewState extends State<MovieHorizontalListview> {
   final scrollController = ScrollController();
+  bool isFetchingMoreMovies = false;
 
   @override
   void initState() {
     super.initState();
 
-    scrollController.addListener(() {
+    scrollController.addListener(() async {
       if (widget.loadNextPage == null) return;
 
       if (scrollController.position.pixels + 200 >=
           scrollController.position.maxScrollExtent) {
-        widget.loadNextPage!();
+        if (isFetchingMoreMovies) return;
+
+        isFetchingMoreMovies = true;
+
+        await widget.loadNextPage!();
+
+        isFetchingMoreMovies = false;
       }
     });
   }
@@ -59,7 +66,7 @@ class _MovieHorizontalListviewState extends State<MovieHorizontalListview> {
             physics: const ClampingScrollPhysics(),
             itemCount: widget.movies.length,
             itemBuilder: (context, index) {
-              return _Slide(movie: widget.movies[index]);
+              return FadeInRight(child: _Slide(movie: widget.movies[index]));
             },
           )),
         ],
