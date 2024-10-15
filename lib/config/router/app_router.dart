@@ -6,13 +6,26 @@ final appRouter = GoRouter(
   initialLocation: "/",
   routes: [
     GoRoute(
-      path: "/",
-      name: HomeScreen.name,
-      pageBuilder: (context, state) {
-        //Custom page transition example
-        return cupertinolikePageTransition(child: const HomeScreen());
-      },
-    )
+        path: "/",
+        name: HomeScreen.name,
+        pageBuilder: (context, state) {
+          //Custom page transition example
+          return cupertinolikePageTransition(child: const HomeScreen());
+        },
+        routes: [
+          GoRoute(
+            path: "movie/:id",
+            name: MovieScreen.name,
+            pageBuilder: (context, state) {
+              //Custom page transition example
+              return cupertinolikePageTransition(
+                child: MovieScreen(
+                  movieId: state.pathParameters["id"] ?? "no-id",
+                ),
+              );
+            },
+          ),
+        ]),
   ],
 );
 

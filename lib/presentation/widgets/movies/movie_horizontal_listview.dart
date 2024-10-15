@@ -1,8 +1,10 @@
 import 'package:animate_do/animate_do.dart';
-import 'package:cinemapedia/config/helper/human_number_formats.dart';
+import 'package:cinemapedia/config/helpers/human_number_formats.dart';
+import 'package:cinemapedia/config/router/app_router.dart';
 import 'package:cinemapedia/domain/entities/movie.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:go_router/go_router.dart';
 
 class MovieHorizontalListview extends StatefulWidget {
   final List<Movie> movies;
@@ -67,12 +69,14 @@ class _MovieHorizontalListviewState extends State<MovieHorizontalListview> {
             physics: const ClampingScrollPhysics(),
             itemCount: widget.movies.length,
             itemBuilder: (context, index) {
-              if (scrollController.position.userScrollDirection ==
-                  ScrollDirection.reverse) {
-                return FadeInRight(child: _Slide(movie: widget.movies[index]));
-              } else {
-                return FadeInLeft(child: _Slide(movie: widget.movies[index]));
-              }
+              final slideWidget = _Slide(movie: widget.movies[index]);
+
+              return scrollController.position.userScrollDirection ==
+                      ScrollDirection.reverse
+                  ? FadeInRight(child: slideWidget)
+                  : FadeInLeft(
+                      child: slideWidget,
+                    );
             },
           )),
         ],
@@ -138,7 +142,9 @@ class _Slide extends StatelessWidget {
                         alignment: Alignment.center,
                         child: CircularProgressIndicator(strokeWidth: 2));
                   }
-                  return FadeIn(child: child);
+                  return GestureDetector(
+                      onTap: () => context.push("/movie/${movie.id}"),
+                      child: FadeIn(child: child));
                 },
               ),
             ),
