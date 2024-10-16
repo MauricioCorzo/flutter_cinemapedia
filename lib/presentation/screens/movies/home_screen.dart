@@ -57,7 +57,7 @@ class _HomeViewState extends ConsumerState<_HomeView> {
       );
     }
 
-    final slideShowNowPlayingMovies = ref.watch(moviesSlideShowProvider);
+    // final slideShowNowPlayingMovies = ref.watch(moviesSlideShowProvider);
     final nowPlayingMovies = ref.watch(nowPlayingMoviesProvider);
     final popularMovies = ref.watch(popularMoviesProvider);
     final upcomingMovies = ref.watch(upcomingMoviesProvider);
@@ -98,8 +98,8 @@ class _HomeViewState extends ConsumerState<_HomeView> {
                 //     },
                 //   ),
                 // )
-                // MoviesSlideshow(movies: nowPlayingMovies.sublist(0, 6))
-                MoviesSlideshow(movies: slideShowNowPlayingMovies),
+                MoviesSlideshow(movies: nowPlayingMovies.sublist(0, 6)),
+                // MoviesSlideshow(movies: slideShowNowPlayingMovies),
 
                 MovieHorizontalListview(
                   movies: nowPlayingMovies,
