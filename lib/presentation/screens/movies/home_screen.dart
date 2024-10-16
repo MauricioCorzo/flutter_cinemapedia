@@ -1,4 +1,4 @@
-import 'package:cinemapedia/config/helper/date_formats.dart';
+import 'package:cinemapedia/config/helpers/date_formats.dart';
 import 'package:cinemapedia/presentation/providers/providers.dart';
 import 'package:cinemapedia/presentation/widgets/shared/full_screen_loader.dart';
 import 'package:cinemapedia/presentation/widgets/wigets.dart';
