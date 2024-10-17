@@ -10,6 +10,7 @@ final movieDetailsProvider =
 });
 
 /*
+Map<String, Movie>
   {
     "505642" : Movie(),
     "505622" : Movie(),
@@ -27,7 +28,6 @@ class MovieMapNotifier extends StateNotifier<Map<String, Movie>> {
 
   Future<void> loadMovie(String movieId) async {
     if (state[movieId] != null) return;
-    print("cargando pelicula");
     final movie = await getMovieDetails(movieId);
 
     state = {...state, movieId: movie};
