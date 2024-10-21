@@ -44,7 +44,7 @@ class _Slide extends StatelessWidget {
         borderRadius: BorderRadius.circular(20),
         boxShadow: const [
           BoxShadow(
-              color: Colors.black12, blurRadius: 10, offset: Offset(0, 10))
+              color: Colors.black26, blurRadius: 10, offset: Offset(0, 10))
         ]);
 
     return FractionallySizedBox(

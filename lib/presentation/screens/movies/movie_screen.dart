@@ -73,29 +73,37 @@ class _CustomSliverAppBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final scaffoldBackgroundColor = Theme.of(context).scaffoldBackgroundColor;
     return SliverAppBar(
       backgroundColor: Colors.black,
       expandedHeight: MediaQuery.of(context).size.height * 0.7,
       foregroundColor: Colors.white, //Color for text and icons
       flexibleSpace: FlexibleSpaceBar(
-        titlePadding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+        titlePadding: const EdgeInsets.only(bottom: 0),
         centerTitle: false,
-        // title: Text(
-        //   movieTitle,
-        //   style: const TextStyle(fontSize: 20, color: Colors.white),
-        // ),
+        title: SizedBox.expand(
+          child: DecoratedBox(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                  colors: [Colors.transparent, scaffoldBackgroundColor],
+                  stops: const [0.7, 1],
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter),
+            ),
+          ),
+        ),
         background: Stack(
           fit: StackFit.expand,
           children: [
             DecoratedBox(
               position: DecorationPosition.foreground,
               decoration: const BoxDecoration(
-                gradient: LinearGradient(
-                    colors: [Colors.transparent, Colors.black45],
-                    stops: [0.7, 1.0],
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter),
-              ),
+                  // gradient: LinearGradient(
+                  //     colors: [Colors.transparent, scaffoldBackgroundColor],
+                  //     stops: const [0.7, 1.0],
+                  //     begin: Alignment.topCenter,
+                  //     end: Alignment.bottomCenter),
+                  ),
               child: Image.network(
                 moviePosterPath,
                 width: double.infinity,
@@ -113,6 +121,8 @@ class _CustomSliverAppBar extends StatelessWidget {
                 },
               ),
             ),
+
+            //Gradient for back button
             Container(
               decoration: const BoxDecoration(
                 gradient: LinearGradient(
@@ -218,13 +228,13 @@ class _ActorsByMovie extends ConsumerWidget {
           width: 150,
           margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               ClipRRect(
                 borderRadius: BorderRadius.circular(10),
                 child: Image.network(
                   actor.profilePath,
-                  width: 135,
+                  width: 150,
                   height: 200,
                   fit: BoxFit.cover,
                   loadingBuilder: (context, child, loadingProgress) {
