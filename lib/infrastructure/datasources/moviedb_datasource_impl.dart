@@ -75,6 +75,18 @@ class MoviedbDatasourceImpl implements MoviesDatasource {
     final movieDb = MovieDetailsResponse.fromJson(response.data);
     return MovieMapper.detailsMovieDbToEntity(movieDb);
   }
+
+  @override
+  Future<List<Movie>> searchMovies(String querySearch) async {
+    final Response dioResponse = await _dio.get(
+      "/search/movie",
+      queryParameters: {
+        "query": querySearch,
+      },
+    );
+
+    return _jsonToMovies(dioResponse.data);
+  }
 }
 
 List<Movie> _jsonToMovies(Map<String, dynamic> json) {
