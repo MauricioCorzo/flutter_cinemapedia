@@ -1,148 +1,76 @@
-import 'package:cinemapedia/config/helpers/date_formats.dart';
-import 'package:cinemapedia/presentation/providers/providers.dart';
-import 'package:cinemapedia/presentation/widgets/shared/full_screen_loader.dart';
-import 'package:cinemapedia/presentation/widgets/wigets.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 class HomeScreen extends StatelessWidget {
   static const name = "home-screen";
-  const HomeScreen({super.key});
+
+  final StatefulNavigationShell childView;
+  const HomeScreen({super.key, required this.childView});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: const _HomeView(),
-      bottomNavigationBar: BottomNavigationBar(
-        items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.home_max), label: "Home"),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.label_outline), label: "Categories"),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.favorite_outline), label: "Favorites"),
-        ],
-      ),
+      // body: const HomeView(),
+      // body: const Center(
+      //   child: Text("Hola Mundo"),
+      // ),
+      body: childView,
+      bottomNavigationBar:
+          CustomBottomNavigationBar(currentIndex: childView.currentIndex),
     );
   }
 }
 
-class _HomeView extends ConsumerStatefulWidget {
-  const _HomeView();
+class CustomBottomNavigationBar extends StatelessWidget {
+  final int currentIndex;
+  const CustomBottomNavigationBar({
+    super.key,
+    required this.currentIndex,
+  });
 
-  @override
-  _HomeViewState createState() => _HomeViewState();
-}
+  // int getCurrentIndex(BuildContext context) {
+  //   final location = GoRouterState.of(context).fullPath;
 
-class _HomeViewState extends ConsumerState<_HomeView> {
-  @override
-  void initState() {
-    super.initState();
-    // Tengo acceso al ref porque estoy dentro de un ConsumerState, no hace falta el build(context,ref)
-    ref.read(nowPlayingMoviesProvider.notifier).loadNextPage();
+  //   switch (location) {
+  //     case "/":
+  //       return 0;
+  //     case "/categories":
+  //       return 1;
+  //     case "/favorites":
+  //       return 2;
+  //     default:
+  //       return 0;
+  //   }
+  // }
 
-    ref.read(popularMoviesProvider.notifier).loadNextPage();
-
-    ref.read(upcomingMoviesProvider.notifier).loadNextPage();
-
-    ref.read(topRatedMoviesProvider.notifier).loadNextPage();
+  void onItemTap(BuildContext context, int index) {
+    switch (index) {
+      case 0:
+        context.go("/");
+        break;
+      case 1:
+        context.go("/categories");
+        break;
+      case 2:
+        context.go("/favorites");
+        break;
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    final initialLoading = ref.watch(initialLoadingProvider);
-
-    if (initialLoading) {
-      return const Center(
-        child: FullScreenLoader(),
-      );
-    }
-
-    // final slideShowNowPlayingMovies = ref.watch(moviesSlideShowProvider);
-    final nowPlayingMovies = ref.watch(nowPlayingMoviesProvider);
-    final popularMovies = ref.watch(popularMoviesProvider);
-    final upcomingMovies = ref.watch(upcomingMoviesProvider);
-    final topRatedMovies = ref.watch(topRatedMoviesProvider);
-
-    // if (slideShowNowPlayingMovies.isEmpty) {
-    // return const Center(
-    //   child: FullScreenLoader(),
-    // );
-    // }
-
-    return SizedBox.expand(
-      child: CustomScrollView(
-        slivers: [
-          const SliverAppBar(
-            floating: true,
-            // forceMaterialTransparency: true,
-
-            flexibleSpace: FlexibleSpaceBar(
-              titlePadding: EdgeInsets.zero,
-              centerTitle: false,
-              title: CustomAppbar(),
-            ),
-          ),
-          SliverList(
-              delegate: SliverChildBuilderDelegate((context, index) {
-            return Column(
-              children: [
-                // const CustomAppbar(),
-                // Expanded(
-                //   child: ListView.builder(
-                //     itemCount: nowPlayingMovies.length,
-                //     itemBuilder: (context, index) {
-                //       final movie = nowPlayingMovies[index];
-                //       return ListTile(
-                //         title: Text(movie.title),
-                //       );
-                //     },
-                //   ),
-                // )
-                MoviesSlideshow(movies: nowPlayingMovies.sublist(0, 6)),
-                // MoviesSlideshow(movies: slideShowNowPlayingMovies),
-
-                MovieHorizontalListview(
-                  movies: nowPlayingMovies,
-                  title: "In theatres",
-                  subTitle:
-                      "${CustomDateFormatter.date("dd/MM", DateTime.parse("2024-09-04"))} - ${CustomDateFormatter.date("dd/MM", DateTime.parse("2024-10-16"))}",
-                  loadNextPage: () => ref
-                      .read(nowPlayingMoviesProvider.notifier)
-                      .loadNextPage(),
-                ),
-
-                MovieHorizontalListview(
-                  movies: popularMovies,
-                  title: "Popular",
-                  // subTitle: "Lunes 20",
-                  loadNextPage: () =>
-                      ref.read(popularMoviesProvider.notifier).loadNextPage(),
-                ),
-
-                MovieHorizontalListview(
-                  movies: upcomingMovies,
-                  title: "Upcoming",
-                  subTitle: "This month",
-                  loadNextPage: () =>
-                      ref.read(upcomingMoviesProvider.notifier).loadNextPage(),
-                ),
-
-                MovieHorizontalListview(
-                  movies: topRatedMovies,
-                  title: "Top Rated",
-                  subTitle: "From always",
-                  loadNextPage: () =>
-                      ref.read(topRatedMoviesProvider.notifier).loadNextPage(),
-                ),
-
-                const SizedBox(
-                  height: 20,
-                )
-              ],
-            );
-          }, childCount: 1))
-        ],
-      ),
+    return BottomNavigationBar(
+      onTap: (iconIndex) {
+        return onItemTap(context, iconIndex);
+      },
+      currentIndex: this.currentIndex,
+      items: const [
+        BottomNavigationBarItem(icon: Icon(Icons.home_max), label: "Home"),
+        BottomNavigationBarItem(
+            icon: Icon(Icons.label_outline), label: "Categories"),
+        BottomNavigationBarItem(
+            icon: Icon(Icons.favorite_outline), label: "Favorites"),
+      ],
     );
   }
 }

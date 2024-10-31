@@ -80,7 +80,6 @@ class MoviedbDatasourceImpl implements MoviesDatasource {
   Future<List<Movie>> searchMovies(String querySearch) async {
     if (querySearch.isEmpty) return [];
 
-    print("realizando la petición hhtp");
     final Response dioResponse = await _dio.get(
       "/search/movie",
       queryParameters: {

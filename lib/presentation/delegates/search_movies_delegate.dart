@@ -28,6 +28,7 @@ class SearchMoviesDelegate extends SearchDelegate<Movie?> {
   void clearStreams() {
     debounceMoviesStrem.close();
     isLoadingStream.close();
+    _debounceTimer?.cancel();
   }
 
 // Debounce manual en Dart
