@@ -46,10 +46,7 @@ class MovieScreenState extends ConsumerState<MovieScreen> {
       body: CustomScrollView(
         physics: const ClampingScrollPhysics(),
         slivers: [
-          _CustomSliverAppBar(
-            movieTitle: movieDetails.title,
-            moviePosterPath: movieDetails.posterPath,
-          ),
+          _CustomSliverAppBar(movie: movieDetails),
           SliverList(
               delegate: SliverChildBuilderDelegate(
             (context, index) => _MovieDetails(
@@ -63,24 +60,48 @@ class MovieScreenState extends ConsumerState<MovieScreen> {
   }
 }
 
-class _CustomSliverAppBar extends StatelessWidget {
-  final String movieTitle;
-  final String moviePosterPath;
+class _CustomSliverAppBar extends ConsumerWidget {
+  final Movie movie;
+
   const _CustomSliverAppBar({
-    required this.movieTitle,
-    required this.moviePosterPath,
+    required this.movie,
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, ref) {
+    final isFavoriteProvider = ref.watch(isFavoriteMovieProvider(movie.id));
     final scaffoldBackgroundColor = Theme.of(context).scaffoldBackgroundColor;
     return SliverAppBar(
       backgroundColor: Colors.black,
       expandedHeight: MediaQuery.of(context).size.height * 0.7,
-      foregroundColor: Colors.white, //Color for text and icons
+      foregroundColor: Colors.white,
+      actions: [
+        IconButton(
+          onPressed: () async {
+            await ref
+                .read(localStorageRepositoryProvider)
+                .toggleFavorite(movie);
+
+            //Similar a invalidateQuery en reactQeury,
+            //regenera el provider invalidando su estado
+            //y lo regenera a su estado original, como es un Future,
+            //rehace la peticion en este caso a la db;
+            ref.invalidate(isFavoriteMovieProvider(movie.id));
+          },
+          icon: isFavoriteProvider.when(
+              data: (isFavorite) => isFavorite
+                  ? const Icon(
+                      Icons.favorite_rounded,
+                      color: Colors.red,
+                    )
+                  : const Icon(Icons.favorite_outline_rounded),
+              error: (_, __) => const SizedBox(),
+              loading: () => const CircularProgressIndicator(strokeWidth: 2)),
+        )
+      ], //Color for text and icons
       flexibleSpace: FlexibleSpaceBar(
         titlePadding: const EdgeInsets.only(bottom: 0),
-        centerTitle: false,
+        // centerTitle: false,
         title: SizedBox.expand(
           child: DecoratedBox(
             decoration: BoxDecoration(
@@ -105,7 +126,7 @@ class _CustomSliverAppBar extends StatelessWidget {
                   //     end: Alignment.bottomCenter),
                   ),
               child: Image.network(
-                moviePosterPath,
+                movie.posterPath,
                 width: double.infinity,
                 fit: BoxFit.cover,
                 loadingBuilder: (context, child, loadingProgress) {
@@ -130,6 +151,16 @@ class _CustomSliverAppBar extends StatelessWidget {
                     stops: [0.0, 0.2],
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight),
+              ),
+            ),
+            //Gradient for favorite action button
+            Container(
+              decoration: const BoxDecoration(
+                gradient: LinearGradient(
+                    colors: [Colors.black, Colors.transparent],
+                    stops: [0.0, 0.2],
+                    begin: Alignment.topRight,
+                    end: Alignment.bottomLeft),
               ),
             )
           ],

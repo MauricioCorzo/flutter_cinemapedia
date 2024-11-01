@@ -5,3 +5,4 @@ linter:
     unnecessary_new: false
     unnecessary_this: false
     prefer_null_aware_operators: false
+    unnecessary_string_interpolations: false
