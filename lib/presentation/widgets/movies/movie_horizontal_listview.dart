@@ -70,12 +70,17 @@ class _MovieHorizontalListviewState extends State<MovieHorizontalListview> {
             itemBuilder: (context, index) {
               final slideWidget = _Slide(movie: widget.movies[index]);
 
-              return scrollController.position.userScrollDirection ==
-                      ScrollDirection.reverse
-                  ? FadeInRight(child: slideWidget)
-                  : FadeInLeft(
-                      child: slideWidget,
-                    );
+              switch (scrollController.position.userScrollDirection) {
+                case ScrollDirection.idle:
+                  return slideWidget;
+                case ScrollDirection.forward:
+                  return FadeInLeft(from: 150, child: slideWidget);
+                case ScrollDirection.reverse:
+                  return FadeInRight(
+                    from: 150,
+                    child: slideWidget,
+                  );
+              }
             },
           )),
         ],
@@ -143,7 +148,7 @@ class _Slide extends StatelessWidget {
                   }
                   return GestureDetector(
                       onTap: () => context.push("/movie/${movie.id}"),
-                      child: FadeIn(child: child));
+                      child: child);
                 },
               ),
             ),

@@ -79,7 +79,7 @@ class _CustomSliverAppBar extends ConsumerWidget {
         IconButton(
           onPressed: () async {
             await ref
-                .read(localStorageRepositoryProvider)
+                .read(favoriteMoviesProvider.notifier)
                 .toggleFavorite(movie);
 
             //Similar a invalidateQuery en reactQeury,

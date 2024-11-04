@@ -37,8 +37,9 @@ class StorageMoviesNotifier extends StateNotifier<Map<int, Movie>> {
 
   StorageMoviesNotifier({required this.localStorageRepository}) : super({});
 
-  Future<void> loadNextFavoritesMoviesOffset() async {
-    final movies = await localStorageRepository.loadMovies(offset: page * 10);
+  Future<List<Movie>> loadNextFavoritesMoviesOffset() async {
+    final movies =
+        await localStorageRepository.loadMovies(offset: page * 10, limit: 20);
     page++;
 
     final moviesMap = <int, Movie>{};
@@ -47,6 +48,24 @@ class StorageMoviesNotifier extends StateNotifier<Map<int, Movie>> {
     }
     state = {...state, ...moviesMap};
 
-    return;
+    return movies;
+  }
+
+  Future<void> toggleFavorite(Movie movie) async {
+    // Cuando se llama a toggleFavorite, primero se verifca si la película ya está en favoritos.
+    final bool isMovieInFavorites =
+        await localStorageRepository.isMovieFavorite(movie.id);
+
+// independientemente de si la película está en favoritos o no, se alterna en la base de datos.
+    await localStorageRepository.toggleFavorite(movie);
+
+// Si la película estaba en favoritos, se elimina del estado
+    if (isMovieInFavorites) {
+      state.remove(movie.id);
+      state = {...state};
+    } else {
+      // verificar si está cargando películas para que en ese momento se añdada la película y no antes
+      state = {...state, movie.id: movie};
+    }
   }
 }
