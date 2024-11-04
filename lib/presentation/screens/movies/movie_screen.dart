@@ -87,6 +87,7 @@ class _CustomSliverAppBar extends ConsumerWidget {
             //y lo regenera a su estado original, como es un Future,
             //rehace la peticion en este caso a la db;
             ref.invalidate(isFavoriteMovieProvider(movie.id));
+            // ref.refresh(isFavoriteMovieProvider(movie.id));
           },
           icon: isFavoriteProvider.when(
               data: (isFavorite) => isFavorite
